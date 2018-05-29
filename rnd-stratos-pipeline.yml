@@ -1,0 +1,28 @@
+---
+jobs:
+- name: job-deploy-stratos
+  plan:
+  - get: resource-get-stratos
+    trigger: true
+  - put: resource-deploy-stratos
+    params:
+      current_app_name: console
+      path: resource-get-stratos/
+      manifest: resource-get-stratos/manifest.yml
+
+resources:
+- name: resource-get-stratos
+  type: git
+  source:
+    branch: v2-master
+    uri: https://github.com/grapeup/rnd-stratos.git
+
+- name: resource-deploy-stratos
+  type: cf
+  source:
+    api: https://api.cf.rnd.grapeup.com
+    username: admin
+    password: ((cf_admin_password))
+    organization: grape
+    space: dev
+    skip_cert_check: true
